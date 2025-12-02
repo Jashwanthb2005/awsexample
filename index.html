@@ -83,5 +83,73 @@
         sudo docker stop b2db90578568
     </aws>
     <smtp>aoof vqqb urha rmmo</smtp>
+    <docker>
+        mvn clean package -DskipTests
+        docker build -t johndoe/mywebapp:latest .
+        //docker run -p 8080:8080 johndoe/mywebapp:latest
+        
+        docker login
+        
+        docker push johndoe/mywebapp:latest
+        
+        FROM eclipse-temurin:17-jdk
+        WORKDIR /app
+        COPY . .
+        RUN mvn -q -e -DskipTests package
+        EXPOSE 8080
+        CMD ["java", "-jar", "target/myapp.jar"]
+        
+        
+        FROM tomcat:10.1-jdk17
+        COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
+        EXPOSE 8000
+        CMD ["catalina.sh", "run"]
+        
+        
+        
+        ///////////////////
+        
+        notepad docker-compose
+        ren docker-compose.txt docker-compose.yml
+        docker-compose up -d
+        
+        
+        version: "3.9"
+        
+        services:
+          wordpress:
+            image: wordpress:latest
+            container_name: wordpress-app
+            ports:
+              - "9090:80"
+            environment:
+              WORDPRESS_DB_HOST: db
+              WORDPRESS_DB_USER: wpuser
+              WORDPRESS_DB_PASSWORD: wppassword
+              WORDPRESS_DB_NAME: wpdatabase
+            depends_on:
+              - db
+            volumes:
+              - wp_data:/var/www/html
+        
+          db:
+            image: mysql:8
+            container_name: wordpress-db
+            restart: always
+            environment:
+              MYSQL_ROOT_PASSWORD: rootpassword
+              MYSQL_DATABASE: wpdatabase
+              MYSQL_USER: wpuser
+              MYSQL_PASSWORD: wppassword
+            volumes:
+              - db_data:/var/lib/mysql
+        
+        volumes:
+          wp_data:
+          db_data:
+
+
+
+    </docker>
 </body>
 </html>
